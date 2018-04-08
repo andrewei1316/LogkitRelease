@@ -41,11 +41,11 @@ class Pack(object):
         try:
             self.i386_name = i386_name % (version, )
         except TypeError:
-            pass
+            self.i386_name = i386_name
         try:
             self.amd64_name = amd64_name % (version, )
         except TypeError:
-            pass
+            self.amd64_name = amd64_name
         self.tmp_dir = tempfile.mkdtemp()
         self.pack_dir = os.path.join(self.tmp_dir, '_package').strip()
 

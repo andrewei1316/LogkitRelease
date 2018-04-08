@@ -5,10 +5,12 @@
 import os
 import qiniu
 import ConfigParser
+from base import Sender
 
 
-class Kodo(object):
+class Kodo(Sender):
     def __init__(self, cf):
+        Sender.__init__(self)
         try:
             ak = cf.get('sender_kodo', 'ak')
         except ConfigParser.NoSectionError:
@@ -34,17 +36,17 @@ class Kodo(object):
         self.token = self.q.upload_token(self.bucket, file_name, 3600*24*365*100)
 
     def _put_file(self, file_path, file_name):
-        print 'begin to send file %s' % (file_name, )
+        print 'begin to send file %s to bucket %s' % (file_name, self.bucket)
         ret, info = qiniu.put_file(self.token, file_name, file_path)
         if info.status_code == 200:
             assert ret['key'] == file_name
             assert ret['hash'] == qiniu.etag(file_path)
-            print 'send file %s finished' % (file_name, )
+            print 'send file %s to bucket %s finished' % (file_name, self.bucket)
         else:
             print 'send file %s error' % (file_name, )
             print 'response is', info
 
-    def main(self, file_path):
+    def send(self, file_path):
         file_name = os.path.basename(file_path)
         self._prepare(file_name)
         self._put_file(file_path, file_name)

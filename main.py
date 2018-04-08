@@ -9,7 +9,7 @@ from tools import models
 
 from pack.pack import Pack
 from pack.compiled import Compiled
-from sender.kodo import Kodo
+from sender.base import create_sender
 
 
 def run(conf):
@@ -39,11 +39,15 @@ def run(conf):
     version = raw_input('please input version: ')
     com = Compiled(code_path, cf, version)
     pack = Pack(code_path, cf, version)
-    kodo = Kodo(cf)
+    senders = create_sender(cf)
     for al in arch_list:
         com.main(al)
         pack_path = pack.main(al)
-        kodo.main(pack_path)
+        for (k, s) in senders.items():
+            try:
+                s.send(pack_path)
+            except AttributeError:
+                print 'Warn:', k, 'has no attr send(file_path)'
 
 
 def main(argv):
