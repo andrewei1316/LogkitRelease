@@ -22,6 +22,7 @@ pip install -r requirements.txt
 ```
 python main.py -f config.conf
 ```
+* 注意: 该程序暂未根据 version 自动将 git 切换到相应的 tag, 在运行该程序前请自行将代码切换到相应的 tag
 
 ## 依赖
 * python 2.X
